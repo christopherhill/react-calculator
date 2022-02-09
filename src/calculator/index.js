@@ -2,25 +2,25 @@ import React, { useState, useEffect } from 'react'
 import './Calculator.css'
 
 const keypad = [
-  { keyCode: 'Escape', display: 'AC', value: 'clear', className: 'ac control' },
-  { keyCode: '_', display: '+/-', value: 'negated', className: 'negative control' },
-  { keyCode: '%', display: '%', value: 'percent', className: 'percent control' },
-  { keyCode: '/', display: <>&divide;</>, value: '/', className: 'divide operator' },
-  { keyCode: '*', display: <>&times;</>, value: '*', className: 'multiply operator' },
-  { keyCode: '-', display: '-', value: '-', className: 'minus operator' },
-  { keyCode: '+', display: '+', value: '+', className: 'plus operator' },
-  { keyCode: 'Enter', display: '=', value: '=', className: 'equals operator' },
-  { keyCode: '.', display: '.', value: '.', className: 'decimal number' },
-  { keyCode: '0', display: '0', value: '0', className: 'zero number' },
-  { keyCode: '1', display: '1', value: '1', className: 'one number' },
-  { keyCode: '2', display: '2', value: '2', className: 'two number' },
-  { keyCode: '3', display: '3', value: '3', className: 'three number' },
-  { keyCode: '4', display: '4', value: '4', className: 'four number' },
-  { keyCode: '5', display: '5', value: '5', className: 'five number' },
-  { keyCode: '6', display: '6', value: '6', className: 'six number' },
-  { keyCode: '7', display: '7', value: '7', className: 'seven number' },
-  { keyCode: '8', display: '8', value: '8', className: 'eight number' },
-  { keyCode: '9', display: '9', value: '9', className: 'nine number' },
+  { type:'command', keyCode: 'Escape', display: 'AC', value: 'clear', className: 'ac' },
+  { type:'command', keyCode: '_', display: '+/-', value: 'negated', className: 'negative' },
+  { type:'command', keyCode: '%', display: '%', value: 'percent', className: 'percent' },
+  { type: 'operator', keyCode: '/', display: <>&divide;</>, value: '/', className: 'divide' },
+  { type: 'operator', keyCode: '*', display: <>&times;</>, value: '*', className: 'multiply' },
+  { type: 'operator', keyCode: '-', display: '-', value: '-', className: 'minus' },
+  { type: 'operator', keyCode: '+', display: '+', value: '+', className: 'plus' },
+  { type: 'operator', keyCode: 'Enter', display: '=', value: '=', className: 'equals' },
+  { type: 'digit', keyCode: '.', display: '.', value: '.', className: 'decimal' },
+  { type: 'digit', keyCode: '0', display: '0', value: '0', className: 'zero' },
+  { type: 'digit', keyCode: '1', display: '1', value: '1', className: 'one' },
+  { type: 'digit', keyCode: '2', display: '2', value: '2', className: 'two' },
+  { type: 'digit', keyCode: '3', display: '3', value: '3', className: 'three' },
+  { type: 'digit', keyCode: '4', display: '4', value: '4', className: 'four' },
+  { type: 'digit', keyCode: '5', display: '5', value: '5', className: 'five' },
+  { type: 'digit', keyCode: '6', display: '6', value: '6', className: 'six' },
+  { type: 'digit', keyCode: '7', display: '7', value: '7', className: 'seven' },
+  { type: 'digit', keyCode: '8', display: '8', value: '8', className: 'eight' },
+  { type: 'digit', keyCode: '9', display: '9', value: '9', className: 'nine' },
 ]
 
 const operations = {
@@ -31,16 +31,12 @@ const operations = {
   '=': (prevValue, nextValue) => nextValue
 }
 
-const operationTypes = Object.keys(operations)
-
-const commandTypes = ['clear', 'percent', 'negated']
-
-const CalculatorKey = ({ className, onClick, value, display }) => {
+const CalculatorKey = ({ className, onClick, value, display, type }) => {
   const handleClick = (e) => {
     e.preventDefault()
-    onClick(value)
+    onClick(value, type)
   }
-  return <button className={className} onClick={handleClick}>
+  return <button className={`${className} ${type}`} onClick={handleClick}>
     {display}
   </button>
 }
@@ -96,34 +92,33 @@ const Calculator = () => {
       displayValue: String(newValue),
       value: newValue
     })
-
   }
 
-  const handleClick = (buttonType) => {
-    if (operationTypes.indexOf(buttonType) >= 0) { // operand
+  const handleClick = (buttonValue, type) => {
+    console.log({ type, buttonValue })
+    if (type === 'operator') { // operand
 
       setCalculator({
         ...calculator,
-        operator: buttonType,
-        // waitingForOperand: false,
+        operator: buttonValue,
         value: parseFloat(displayValue), // move the display value to value as the left operator
         displayValue: '' // computer new value
       })
-      if (buttonType === '=') { handleCompute() }
+      if (buttonValue === '=') { handleCompute() }
 
-    } else if (commandTypes.indexOf(buttonType) >= 0) { // command
+    } else if (type === 'command') { // command
 
-      if (buttonType === 'clear') {
+      if (buttonValue === 'clear') {
         clearAll()
-      } else if (buttonType === 'percent') {
+      } else if (buttonValue === 'percent') {
         makePercent()
-      } else if (buttonType === 'negated') {
+      } else if (buttonValue === 'negated') {
         makeNegated()
       }
 
-    } else { // digit
+    } else if (type === 'digit') { // digit
       
-      const newDisplayValue = displayValue !== '0' ? displayValue + buttonType : buttonType
+      const newDisplayValue = displayValue !== '0' ? displayValue + buttonValue : buttonValue
       setCalculator({
         ...calculator,
         displayValue: newDisplayValue,
@@ -133,13 +128,14 @@ const Calculator = () => {
   }
 
   const handleKeyDown = (e) => {
+    e.preventDefault()
     // look up what to do
     const { key } = e
     console.log({ key })
     const match = keypad.find((k) => k.keyCode === key)
     if (match) {
       console.log(match.value)
-      handleClick(match.value)
+      handleClick(match.value, match.type)
     }
   }
 
@@ -165,6 +161,7 @@ const Calculator = () => {
         display={key.display}
         value={key.value}
         onClick={handleClick}
+        type={key.type}
         className={key.className}
       />)
     }

@@ -77,14 +77,14 @@
     grid-area: nine;
   }
   
-  .control, .operator, .number {
+  .command, .operator, .digit {
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
   }
   
-  .control {
+  .command {
     background: #666767;
   }
   
@@ -92,6 +92,6 @@
     background: #F1A43C;
   }
   
-  .number {
+  .digit {
     background: #7E7E7F;
   }
