@@ -1,0 +1,97 @@
+.calculator-container {
+    display: grid;
+     /* 4 x 6 grid */
+    width: 100%;
+    height: 400px;
+    font-size: 24px;
+    grid-gap: 1px;
+  
+    background: black; /* grid gap + background = border */
+    font-family: "Helvetica";
+    grid-template: "results results  results results"
+                   "ac      negative percent divide"
+                   "seven   eight    nine    multiply"
+                   "four    five     six     minus"
+                   "one     two      three   plus"
+                   "zero    zero     decimal equals";
+    
+  }
+  
+  .results {
+    grid-area: results;
+    background: #424344;
+    color: #fff;
+    display: flex;
+    justify-content: right;
+    align-items: flex-end;
+    padding: 1rem;
+    font-size: 3rem;
+    font-weight: 100;
+  }
+  
+  button {
+    font-size: 2rem;
+  }
+
+  .decimal {
+    grid-area: decimal;
+  }
+  
+  .zero {
+    grid-area: zero;
+  }
+  
+  .one {
+    grid-area: one;
+  }
+  
+  .two {
+    grid-area: two;
+  }
+  
+  .three {
+    grid-area: three;
+  }
+  
+  .four {
+    grid-area: four;
+  }
+  
+  .five {
+    grid-area: five;
+  }
+  
+  .six {
+    grid-area: six;
+  }
+  
+  .seven {
+    grid-area: seven;
+  }
+  
+  .eight {
+    grid-area: eight;
+  }
+  
+  .nine {
+    grid-area: nine;
+  }
+  
+  .control, .operator, .number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  
+  .control {
+    background: #666767;
+  }
+  
+  .operator {
+    background: #F1A43C;
+  }
+  
+  .number {
+    background: #7E7E7F;
+  }
