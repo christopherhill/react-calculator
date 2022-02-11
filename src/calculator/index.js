@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Decimal from 'decimal'
 import './Calculator.css'
 
 const keypad = [
@@ -24,10 +25,10 @@ const keypad = [
 ]
 
 const operations = {
-  '/': (prevValue, nextValue) => prevValue / nextValue,
-  '*': (prevValue, nextValue) => prevValue * nextValue,
-  '+': (prevValue, nextValue) => prevValue + nextValue,
-  '-': (prevValue, nextValue) => prevValue - nextValue,
+  '/': (prevValue, nextValue) => Decimal.div(prevValue, nextValue),
+  '*': (prevValue, nextValue) => Decimal.mul(prevValue, nextValue),
+  '+': (prevValue, nextValue) => Decimal.add(prevValue, nextValue),
+  '-': (prevValue, nextValue) => Decimal.sub(prevValue, nextValue),
   '=': (prevValue, nextValue) => nextValue
 }
 
@@ -117,7 +118,8 @@ const Calculator = () => {
       }
 
     } else if (type === 'digit') { // digit
-      
+
+      if (buttonValue === '.' && displayValue.indexOf('.') >= 0) { return }
       const newDisplayValue = displayValue !== '0' ? displayValue + buttonValue : buttonValue
       setCalculator({
         ...calculator,
@@ -131,10 +133,8 @@ const Calculator = () => {
     e.preventDefault()
     // look up what to do
     const { key } = e
-    console.log({ key })
     const match = keypad.find((k) => k.keyCode === key)
     if (match) {
-      console.log(match.value)
       handleClick(match.value, match.type)
     }
   }
@@ -144,8 +144,6 @@ const Calculator = () => {
     return () => window.removeEventListener('keydown', handleKeyDown)
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleKeyDown])
-
-  console.log({ displayValue, value, operator })
 
   return <div className="calculator-container">
 
